@@ -40,7 +40,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: latest, ${{ steps.get-ver.outputs.VER }}
+          tags: |
+            latest
+            ${{ steps.get-ver.outputs.VER }}
 
       - name: Build and push image
         uses: docker/build-push-action@v5
