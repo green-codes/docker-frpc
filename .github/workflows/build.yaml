@@ -17,6 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Get latest FRP release version
+        id: get-ver
+        run: echo "VER=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.tag_name' | sed 's/v//')" >> $GITHUB_OUTPUT
+
       - name: Check out repository code
         uses: actions/checkout@v4
 
@@ -35,7 +40,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: latest
+          tags: latest, ${{ steps.get-ver.outputs.VER }}
 
       - name: Build and push image
         uses: docker/build-push-action@v5
