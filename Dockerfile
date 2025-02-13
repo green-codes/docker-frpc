@@ -7,13 +7,10 @@ FROM alpine:latest AS building
 # Install required tools (curl and jq for parsing JSON)
 RUN apk add --no-cache curl jq
 
-# Automatically get the latest release version of frp
-ARG FRP_VER=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.tag_name' | sed 's/v//')
-
 # install frp w/chained one-liner
 RUN \
-  APK_ARCH="$(apk --print-arch)"; \
-  case "$APK_ARCH" in \
+  FRP_VER=$(curl -s https://api.github.com/repos/fatedier/frp/releases/latest | jq -r '.tag_name' | sed 's/v//'); \
+  case "$(apk --print-arch)" in \
     "x86_64") export FRP_ARCH="amd64" ;; \
     "aarch64") export FRP_ARCH="arm64" ;; \
   esac; \
