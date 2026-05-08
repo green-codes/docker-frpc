@@ -22,10 +22,9 @@ RUN \
 
 FROM alpine:latest
 
-RUN apk add --no-cache curl
 COPY --from=building /frp/frpc /usr/bin/frpc
 
 CMD ["/usr/bin/frpc", "-c", "/etc/frp/frpc.toml"]
 
 HEALTHCHECK --start-period=30s --start-interval=2s CMD \
-  curl -qfu admin:$(cat /etc/frp/frpc.toml | grep webServer.password | grep -o '"[^"]\+"' | sed 's/"//g') http://127.0.0.1:7400 || exit 1
+  [[ $(/usr/bin/frpc status -c /etc/frp/frpc.toml | awk '{print $2}' | grep 'running' | wc -l) -gt 0 ]]
